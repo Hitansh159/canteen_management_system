@@ -18,6 +18,23 @@ app.get("/clientview", (req, res)=>{
   res.sendFile(path.join(__dirname, "client_view.html"));
 });
 
+app.post("/clientview", (req, res)=>{
+  const {id, pass} = req.body;
+  
+  if(id != "hkd159@gmail.com"){
+    res.send({
+      result: 0
+    });
+  }
+
+  else{
+    res.send({
+      result: 1
+    });
+  }
+    console.log(id, pass);
+});
+
 app.get("/profile", (req, res)=>{
   res.sendFile(path.join(__dirname, "profile.html"));
 });
