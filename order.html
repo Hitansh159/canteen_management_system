@@ -85,16 +85,21 @@
           <th scope="row">1</th>
           <td>lassi</td>
           <td>
-            <select class="form-control" id="exampleFormControlSelect1">
+            <select class="form-control" id="exampleFormControlSelect1" onchange="myfunc(this.value)">
               <option>1</option>
               <option>2</option>
               <option>3</option>
               <option>4</option>
               <option>5</option>
+              
             </select>
           </td>
           <td>
-            <span id="amt1"> 10 </span>
+            <span id="amt1"></span> <script>
+              function myfunc(val){
+                document.getElementById("amt1").innerHTML=val*10;
+              } 
+            </script>
           </td>
         </tr>
 
@@ -102,7 +107,7 @@
           <th scope="row">2</th>
           <td>idli</td>
           <td>
-            <select class="form-control" id="exampleFormControlSelect2">
+            <select class="form-control" id="exampleFormControlSelect2" >
               <option>1</option>
               <option>2</option>
               <option>3</option>
