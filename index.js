@@ -1,4 +1,5 @@
 const path = require("path");
+const mysql = require('mysql');
 const express = require("express");
 const bodyParser = require("body-parser");
 
@@ -8,6 +9,22 @@ app.use(bodyParser.json());
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "sign_in.html"));
+});
+
+app.post("/", (req, res)=>{
+  const {user, pass, email, mob, uid, sut, fac} = req.body;
+
+  if ( send_data(user, pass, email, mob, sut, uid)){
+    res.send({
+      result: 1
+    });
+  }
+  else 
+    res.send({
+      result: 0
+    });
+  
+
 });
 
 app.get("/signup", (req, res)=>{
@@ -58,3 +75,35 @@ app.get("/confirm", (req, res)=>{
 app.listen(5000, () => {
   console.log(`Server is running on port 5000.`);
 });
+
+
+
+function send_data(name, password, email, mobile, person, uid ){
+
+  var con_data = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "",
+    database: "aadi"
+  });
+
+  var suc = true;
+  con_data.connect(function(err) {
+    if (err){ 
+      throw err;
+      suc = false;
+    }
+    
+    console.log(name, password, email, mobile, person, uid);
+    var sql = "INSERT INTO `data`(`username`, `password`, `uid`, `mobile`, `email`, `type`) VALUES  ('"+name+"','"+password+"','"+uid+"',"+mobile+",'"+email+"','"+person+"')";
+    
+    con_data.query(sql, function (err, result) {
+      if (err){
+        throw err;
+        suc = false;
+      }
+      console.log("1 record inserted");
+    });
+  });
+  return suc;
+}
