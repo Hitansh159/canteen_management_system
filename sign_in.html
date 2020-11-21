@@ -12,30 +12,68 @@
   </head>
   <body>
     <h1 align="center" class="bg-primary" style="color:white">Aadi</h1>
-    <form>
+    <form method="POST">
         <div class="col d-flex justify-content-center">
         <div class="card">
             <div class="card-body">
         <div class="form-group">
           <label for="exampleInputEmail1">Username</label>
-          <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Username">
+          <input type="email" class="form-control" id="uid" aria-describedby="emailHelp" placeholder="Enter Username">
          
         </div>
+        
         <div class="form-group">
           <label for="exampleInputPassword1">Password</label>
-          <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+          <input type="password" class="form-control" id="password" placeholder="Password">
         </div>
         
         Don't have account? <a href="/signup">Create account</a><br>
         <hr>
 
+        <span class="result"></span>
+
         <center>
-        <a class="btn btn-primary" href="/clientView">Submit</a>
+        <button class="btn btn-primary" >Submit</button>
         </center>
     </div>
 </div>
     
     </form>
+
+    <script>
+      document.addEventListener("submit", sendData);
+      function sendData(e) {
+        e.preventDefault();
+        const uid = document.querySelector("#uid").value;
+        const pass = document.querySelector("#password").value;
+
+        fetch("/clientview", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            id: uid,
+            pass: pass
+          })
+        })
+          .then(res => res.json())
+          .then(data => {
+            const { result } = data;
+
+            if(result == 0)
+              document.querySelector(
+                ".result"
+              ).innerText = `The login was unsuccesful`;
+
+            else
+              window.location.href = "/clientview";
+            
+          })
+          .catch(err => console.log(err));
+      }
+    </script>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
