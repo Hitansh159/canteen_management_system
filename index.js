@@ -30,6 +30,14 @@ app.get("/order", (req, res)=>{
   res.sendFile(path.join(__dirname, "order.html"));
 });
 
+app.get("/shedule", (req, res)=>{
+  res.sendFile(path.join(__dirname, "shedule.html"));
+});
+
+app.get("/confirm", (req, res)=>{
+  res.sendFile(path.join(__dirname, "confirm.html"));
+});
+
 app.listen(5000, () => {
   console.log(`Server is running on port 5000.`);
 });
