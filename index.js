@@ -13,8 +13,8 @@ app.get("/", (req, res) => {
 
 app.post("/", (req, res)=>{
   const {user, pass, email, mob, uid, sut, fac} = req.body;
-
-  if ( send_data(user, pass, email, mob, sut, uid)){
+  var person = sut==true? "s" :"f";
+  if ( send_data(user, pass, email, mob, person, uid)){
     res.send({
       result: 1
     });
@@ -38,18 +38,23 @@ app.get("/clientview", (req, res)=>{
 app.post("/clientview", (req, res)=>{
   const {id, pass} = req.body;
   
-  if(id != "hkd159@gmail.com"){
-    res.send({
-      result: 0
-    });
-  }
+  var result = get_data(id
+    ,(result)=>{
+      console.log(result);
+      if(pass == result[0].password && result[0].type == 's')
+        res.send({
+          result: 1
+        });
 
-  else{
-    res.send({
-      result: 1
-    });
-  }
-    console.log(id, pass);
+      else{
+        res.send({
+          result: 0
+        });
+      }
+        console.log(id, pass);
+      }
+    );
+  
 });
 
 app.get("/profile", (req, res)=>{
@@ -75,7 +80,6 @@ app.get("/confirm", (req, res)=>{
 app.listen(5000, () => {
   console.log(`Server is running on port 5000.`);
 });
-
 
 
 function send_data(name, password, email, mobile, person, uid ){
@@ -106,4 +110,37 @@ function send_data(name, password, email, mobile, person, uid ){
     });
   });
   return suc;
+}
+
+function get_data(id, callback){
+
+  var con_data = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "",
+    database: "aadi"
+  });
+
+  var suc = true;
+  var res = null;
+  con_data.connect(function(err) {
+    if (err){ 
+      throw err;
+      suc = false;
+    }
+    
+    
+    var sql = "SELECT * FROM `data` WHERE uid='"+id+"';";
+    console.log(sql);
+    con_data.query(sql, function (err, result, field) {
+      if (err){
+        throw err;
+        suc = false;
+      }
+      console.log(result);
+      res = result;
+      callback(result);
+    });
+  });
+  return res;
 }
