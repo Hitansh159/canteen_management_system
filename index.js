@@ -11,7 +11,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/signup", (req, res)=>{
-  res.sendFile(path.join(__dirname, "sign_up,htnl"));
+  res.sendFile(path.join(__dirname, "sign_up.html"));
 });
 
 app.listen(5000, () => {
