@@ -65,11 +65,14 @@
             if(result == 0)
               document.querySelector(
                 ".result"
-              ).innerText = `The login was unsuccesful`;
+              ).innerText = `The id password is incorrect`;
 
-            else
+            else if(result == 1 || result == 2 )
               window.location.href = "/clientview";
             
+            else if(result == 3) 
+              window.location.href = "/adminview"; 
+
           })
           .catch(err => console.log(err));
       }

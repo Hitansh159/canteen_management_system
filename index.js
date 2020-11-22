@@ -40,21 +40,41 @@ app.post("/clientview", (req, res)=>{
   
   var result = get_data(id
     ,(result)=>{
-      console.log(result);
-      if(pass == result[0].password && result[0].type == 's')
-        res.send({
-          result: 1
-        });
+      console.log(result); 
 
-      else{
-        res.send({
-          result: 0
-        });
-      }
+        if(result.length == 0) 
+          res.send({
+            result: 0
+          });
+
+        else if(pass == result[0].password && result[0].type == 's')
+          res.send({
+            result: 1
+          });
+
+        else if(pass == result[0].password && result[0].type == 'f')
+          res.send({
+            result: 2
+          });
+        
+        else if(pass == result[0].password && result[0].type == 'a')
+          res.send({
+            result: 3
+          });
+        
+        else
+          res.send({
+            result: 0
+          });
+        
         console.log(id, pass);
       }
-    );
+  );
   
+});
+
+app.get("/adminview", (req, res)=>{
+  res.sendFile(path.join(__dirname, "adminView.html"));
 });
 
 app.get("/profile", (req, res)=>{
@@ -93,19 +113,16 @@ function send_data(name, password, email, mobile, person, uid ){
 
   var suc = true;
   con_data.connect(function(err) {
-    if (err){ 
-      throw err;
-      suc = false;
-    }
+    if (err) 
+      return err;
     
     console.log(name, password, email, mobile, person, uid);
     var sql = "INSERT INTO `data`(`username`, `password`, `uid`, `mobile`, `email`, `type`) VALUES  ('"+name+"','"+password+"','"+uid+"',"+mobile+",'"+email+"','"+person+"')";
     
     con_data.query(sql, function (err, result) {
-      if (err){
-        throw err;
-        suc = false;
-      }
+      if (err)
+        return err;
+
       console.log("1 record inserted");
     });
   });
@@ -124,20 +141,15 @@ function get_data(id, callback){
   var suc = true;
   var res = null;
   con_data.connect(function(err) {
-    if (err){ 
-      throw err;
-      suc = false;
-    }
-    
+    if (err) 
+      return err;
     
     var sql = "SELECT * FROM `data` WHERE uid='"+id+"';";
     console.log(sql);
     con_data.query(sql, function (err, result, field) {
-      if (err){
-        throw err;
-        suc = false;
-      }
-      console.log(result);
+      if (err)
+        return err;
+
       res = result;
       callback(result);
     });
