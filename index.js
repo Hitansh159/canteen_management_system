@@ -2,6 +2,7 @@ const path = require("path");
 const mysql = require('mysql');
 const express = require("express");
 const bodyParser = require("body-parser");
+const { send } = require("process");
 
 const app = express();
 
@@ -30,6 +31,8 @@ app.post("/", (req, res)=>{
 app.get("/signup", (req, res)=>{
   res.sendFile(path.join(__dirname, "sign_up.html"));
 });
+
+// client views
 
 app.get("/clientview", (req, res)=>{
   res.sendFile(path.join(__dirname, "client_view.html"));
@@ -73,10 +76,6 @@ app.post("/clientview", (req, res)=>{
   
 });
 
-app.get("/adminview", (req, res)=>{
-  res.sendFile(path.join(__dirname, "adminView.html"));
-});
-
 app.get("/profile", (req, res)=>{
   res.sendFile(path.join(__dirname, "profile.html"));
 });
@@ -95,6 +94,20 @@ app.get("/shedule", (req, res)=>{
 
 app.get("/confirm", (req, res)=>{
   res.sendFile(path.join(__dirname, "confirm.html"));
+});
+
+// admin views
+
+app.get("/adminview", (req, res)=>{
+  res.sendFile(path.join(__dirname, "adminView.html"));
+});
+
+app.get("/items_edit", (req, res)=>{
+  res.sendFile(path.join(__dirname, "item_edit.html"))
+});
+
+app.get("/edit", (req, res)=>{
+  res.sendFile(path.join(__dirname, "item.html"));
 });
 
 app.listen(5000, () => {
