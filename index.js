@@ -116,8 +116,8 @@ function send_data(name, password, email, mobile, person, uid ){
     if (err) 
       return err;
     
-    console.log(name, password, email, mobile, person, uid);
-    var sql = "INSERT INTO `data`(`username`, `password`, `uid`, `mobile`, `email`, `type`) VALUES  ('"+name+"','"+password+"','"+uid+"',"+mobile+",'"+email+"','"+person+"')";
+    // console.log(name, password, email, mobile, person, uid);
+    var sql = `INSERT INTO \`data\`(\`username\`, \`password\`, \`uid\`, \`mobile\`, \`email\`, \`type\`) VALUES  ('${name}','${password}','${uid}',${mobile},'${email}','${person}')`;
     
     con_data.query(sql, function (err, result) {
       if (err)
@@ -144,8 +144,8 @@ function get_data(id, callback){
     if (err) 
       return err;
     
-    var sql = "SELECT * FROM `data` WHERE uid='"+id+"';";
-    console.log(sql);
+    var sql = `SELECT * FROM \`data\` WHERE uid='${id}';`;
+    // console.log(sql);
     con_data.query(sql, function (err, result, field) {
       if (err)
         return err;
