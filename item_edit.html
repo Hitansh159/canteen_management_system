@@ -19,25 +19,10 @@
 </head>
 
 <style>
-  .app {
-    font-size: 30px;
-  }
-
-  .uinav {
-    margin-top: 20px;
-  }
-
-  .element-to-stick-to-bottom {
-    position: absolute;
-    bottom: 0;
-  }
-
-  .item {
-    margin: 30px;
-  }
-
-  .container-element {
-    position: relative;
+  .food_container {
+    padding: 5px;
+    max-height: 81%;
+    overflow: scroll;
   }
 </style>
 
@@ -92,17 +77,20 @@
     </div>
   </nav>
 
-  <div class="card" style="width: 18rem;">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/f/f1/Salt_lassi.jpg" class="card-img-top" alt="idli">
-    <div class="card-body">
-      <h5 class="card-title">lassi</h5>
-      <p class="card-text">
-        Name: lassi <br>
-        Type: south indian <br>
-        <hr>
-        Price : 10
-      </p>
-      <a href="/edit" class="btn btn-primary">edit</a>
+  <div class="food_container">
+    <div class="card" style="width: 18rem;">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/f/f1/Salt_lassi.jpg" class="card-img-top" alt="lassi"
+        loading="lazy">
+      <div class="card-body">
+        <h5 class="card-title">lassi</h5>
+        <p class="card-text">
+          Name: lassi <br>
+          Type: south indian <br>
+          <hr>
+          Price : 10
+        </p>
+        <a href="/edit" class="btn btn-primary">edit</a>
+      </div>
     </div>
   </div>
 
