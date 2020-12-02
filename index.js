@@ -106,6 +106,10 @@ app.get("/items_edit", (req, res)=>{
   res.sendFile(path.join(__dirname, "item_edit.html"))
 });
 
+app.get("/edit", (req, res)=>{
+  res.sendFile(path.join(__dirname, "item.html"));
+});
+
 app.listen(5000, () => {
   console.log(`Server is running on port 5000.`);
 });
