@@ -78,6 +78,7 @@
   </nav>
 
   <div class="food_container">
+    <form>
     <div class="card" style="width: 18rem;">
       <img src="https://upload.wikimedia.org/wikipedia/commons/f/f1/Salt_lassi.jpg" class="card-img-top" alt="lassi"
         loading="lazy">
@@ -121,9 +122,10 @@
         </div>
 
         </p>
-        <button class="btn btn-primary">save</button>
+        <button class="btn btn-primary" type="submit">save</button>
       </div>
     </div>
+    </form>
   </div>
 
 
@@ -131,7 +133,7 @@
 </body>
 
 <script>
-  document.addEventListener("save", sendData);
+  document.addEventListener("submit", sendData);
 
   function sendData(e) {
     e.preventDefault();
@@ -140,15 +142,18 @@
     const type = document.querySelector("#type").value;
     const price = document.querySelector("#price").value;
 
-    fetch("/clientview", {
+    fetch("/items_edit", {
       method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        id: uid,
-        pass: pass
+        id : 1,
+        title : title,
+        name : name,
+        type : type,
+        price : price
       })
     })
       .then(res => res.json())
@@ -158,13 +163,10 @@
         if (result == 0)
           document.querySelector(
             ".result"
-          ).innerText = `The id password is incorrect`;
+          ).innerText = `Their is some error please retry`;
 
-        else if (result == 1 || result == 2)
-          window.location.href = "/clientview";
-
-        else if (result == 3)
-          window.location.href = "/adminview";
+        else if (result == 1)
+          window.location.href = "/items_edit";
 
       })
       .catch(err => console.log(err));
