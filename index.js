@@ -119,6 +119,12 @@ app.get("/edit", (req, res) => {
   res.sendFile(path.join(__dirname, "item.html"));
 });
 
+app.get("/get_food_data", (req, res)=>{
+  load_food((result)=>{
+    console.log(result);
+    res.send(result);
+  });
+});
 
 app.listen(5000, () => {
   console.log(`Server is running on port 5000.`);
@@ -207,7 +213,6 @@ function update_food(id, title, name, type, price) {
     var sql = `UPDATE food SET name = '${name}', type = '${type}', price = ${price} WHERE fid = '${id}';`;
 
     conn.query(sql, function (err, result) {
-  console.log("suc is "+ suc+" result is "+result);
       
       if (err) {
         console.log(err);
@@ -246,4 +251,31 @@ function add_food(name, type, price){
   });
   return suc;
 
+}
+
+function load_food(callback){
+  const conn = connect();
+  var suc = true;
+  var res = null;
+
+  conn.connect(function (err) {
+    if (err){
+      console.log(err)
+      suc = false;
+    }
+    var sql = `SELECT * FROM food ;`;
+
+    conn.query(sql, function (err, result, field) {
+      if (err){
+        console.log(err);
+        suc = false;
+      }
+
+      res = result;
+      callback(result);
+    });
+
+  });
+
+  return suc;
 }
