@@ -78,6 +78,7 @@
   </nav>
 
   <div class="food_container">
+    <form>
     <div class="card" style="width: 18rem;">
       <img src="https://upload.wikimedia.org/wikipedia/commons/f/f1/Salt_lassi.jpg" class="card-img-top" alt="lassi"
         loading="lazy">
@@ -86,48 +87,90 @@
 
           <div class="input-group mb-3">
             <div class="input-group-prepend">
-              <span class="input-group-text" id="basic-addon1">Title</span>
+              <span class="input-group-text" id="basic-addon1">Title: #1</span>
             </div>
             <input type="text" class="form-control" placeholder="Title" aria-label="Title"
-              aria-describedby="basic-addon1" value="Lassi">
+              aria-describedby="basic-addon1" value="Lassi" id="title" >
           </div>
 
         </h5>
         <p class="card-text">
 
-          <div class="input-group mb-3">
-            <div class="input-group-prepend">
-              <span class="input-group-text" id="basic-addon1">Name: </span>
-            </div>
-            <input type="text" class="form-control" placeholder="name" aria-label="name"
-              aria-describedby="basic-addon1" value="Lassi">
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">Name: </span>
           </div>
+          <input type="text" class="form-control" placeholder="name" aria-label="name" aria-describedby="basic-addon1"
+            value="Lassi" id="name">
+        </div>
 
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text">Discription:</span>
-            </div>
-            <textarea class="form-control" aria-label="Discription" value="type: North indian"></textarea>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">type: </span>
           </div>
+          <input type="text" class="form-control" placeholder="type" aria-label="type" aria-describedby="basic-addon1"
+            value="North- indian" id="type">
+        </div>
 
-          <hr>
+        <hr>
 
-          <div class="input-group mb-3">
-            <div class="input-group-prepend">
-              <span class="input-group-text" id="basic-addon1">Price: </span>
-            </div>
-            <input type="text" class="form-control" placeholder="price" aria-label="price"
-              aria-describedby="basic-addon1" value="10">
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">Price: </span>
           </div>
-          
+          <input type="text" class="form-control" placeholder="price" aria-label="price" aria-describedby="basic-addon1" value="10" id="price">
+        </div>
+
         </p>
-        <a href="/save" class="btn btn-primary">save</a>
+        <button class="btn btn-primary" type="submit">save</button>
       </div>
     </div>
+    </form>
   </div>
 
 
 
 </body>
+
+<script>
+  document.addEventListener("submit", sendData);
+
+  function sendData(e) {
+    e.preventDefault();
+    const title = document.querySelector("#title").value;
+    const name = document.querySelector("#name").value;
+    const type = document.querySelector("#type").value;
+    const price = document.querySelector("#price").value;
+
+    fetch("/items_edit", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        id : 1,
+        title : title,
+        name : name,
+        type : type,
+        price : price
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        const { result } = data;
+
+        if (result == 0)
+          document.querySelector(
+            ".result"
+          ).innerText = `Their is some error please retry`;
+
+        else if (result == 1)
+          window.location.href = "/items_edit";
+
+      })
+      .catch(err => console.log(err));
+  }
+</script>
 
 </html>

@@ -26,7 +26,7 @@
   }
 </style>
 
-<body>
+<body onload="get_data()">
   <!-- navbar -->
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
 
@@ -77,25 +77,95 @@
     </div>
   </nav>
 
-  <div class="food_container">
-    <div class="card" style="width: 18rem;">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/f/f1/Salt_lassi.jpg" class="card-img-top" alt="lassi"
-        loading="lazy">
-      <div class="card-body">
-        <h5 class="card-title">lassi</h5>
-        <p class="card-text">
-          Name: lassi <br>
-          Type: south indian <br>
-          <hr>
-          Price : 10
-        </p>
-        <a href="/edit" class="btn btn-primary">edit</a>
-      </div>
-    </div>
+  <div class="food_container" id="food_container">
+
   </div>
 
 
 
 </body>
+
+<script>
+  document.addEventListener("submit", sendData);
+
+  function sendData(e) {
+    e.preventDefault();
+    const title = document.querySelector("#title").value;
+    const name = document.querySelector("#name").value;
+    const type = document.querySelector("#type").value;
+    const price = document.querySelector("#price").value;
+
+    fetch("/items_edit", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        id: 1,
+        title: title,
+        name: name,
+        type: type,
+        price: price
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        const { result } = data;
+
+        if (result == 0)
+          document.querySelector(
+            ".result"
+          ).innerText = `Their is some error please retry`;
+
+        else if (result == 1)
+          window.location.href = "/items_edit";
+
+      })
+      .catch(err => console.log(err));
+  }
+
+  function get_data() {
+    console.log("called");
+    fetch("/get_food_data", {
+      method: "GET",
+    })
+      .then(res => res.json())
+      .then(data => {
+        create_cards(data);
+
+      })
+      .catch(err => console.log(err));
+  }
+
+  function create_cards(items) {
+    var cards = "";
+    for (var i = 0; i < items.length; i++) {
+      const { fid, name, type, price } = items[i];
+
+      cards += ` 
+      <div class="card" style="width: 18rem; ">
+
+        <img src = "" class="card-img-top" alt = "${name}" loading = "lazy" >
+
+        <div class="card-body">
+
+          <h5 class="card-title">${name}</h5>
+          <p class="card-text">
+            Name: <span id="name${i}">${name}</span><br>
+            Type: <span id="type${i}">${type} </span><br>
+            <hr>
+            Price : <span id="price${i}">${price}</span>
+          </p>
+
+          <button class="btn btn-primary" onclick="()=>{sendData(${i})}">edit</button>
+        </div>
+      </div>`
+    }
+
+    document.getElementById("food_container").innerHTML = cards;
+
+  }
+</script>
 
 </html>
