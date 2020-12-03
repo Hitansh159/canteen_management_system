@@ -12,126 +12,140 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "sign_in.html"));
 });
 
-app.post("/", (req, res)=>{
-  const {user, pass, email, mob, uid, sut, fac} = req.body;
-  var person = sut==true? "s" :"f";
-  if ( send_data(user, pass, email, mob, person, uid)){
+app.post("/", (req, res) => {
+  const { user, pass, email, mob, uid, sut, fac } = req.body;
+  var person = sut == true ? "s" : "f";
+  if (send_data(user, pass, email, mob, person, uid)) {
     res.send({
       result: 1
     });
   }
-  else 
+  else
     res.send({
       result: 0
     });
-  
+
 
 });
 
-app.get("/signup", (req, res)=>{
+app.get("/signup", (req, res) => {
   res.sendFile(path.join(__dirname, "sign_up.html"));
 });
 
 // client views
 
-app.get("/clientview", (req, res)=>{
+app.get("/clientview", (req, res) => {
   res.sendFile(path.join(__dirname, "client_view.html"));
 });
 
-app.post("/clientview", (req, res)=>{
-  const {id, pass} = req.body;
-  
+app.post("/clientview", (req, res) => {
+  const { id, pass } = req.body;
+
   var result = get_data(id
-    ,(result)=>{
-      console.log(result); 
+    , (result) => {
+      console.log(result);
 
-        if(result.length == 0) 
-          res.send({
-            result: 0
-          });
+      if (result.length == 0)
+        res.send({
+          result: 0
+        });
 
-        else if(pass == result[0].password && result[0].type == 's')
-          res.send({
-            result: 1
-          });
+      else if (pass == result[0].password && result[0].type == 's')
+        res.send({
+          result: 1
+        });
 
-        else if(pass == result[0].password && result[0].type == 'f')
-          res.send({
-            result: 2
-          });
-        
-        else if(pass == result[0].password && result[0].type == 'a')
-          res.send({
-            result: 3
-          });
-        
-        else
-          res.send({
-            result: 0
-          });
-        
-        console.log(id, pass);
-      }
+      else if (pass == result[0].password && result[0].type == 'f')
+        res.send({
+          result: 2
+        });
+
+      else if (pass == result[0].password && result[0].type == 'a')
+        res.send({
+          result: 3
+        });
+
+      else
+        res.send({
+          result: 0
+        });
+
+      console.log(id, pass);
+    }
   );
-  
+
 });
 
-app.get("/profile", (req, res)=>{
+app.get("/profile", (req, res) => {
   res.sendFile(path.join(__dirname, "profile.html"));
 });
 
-app.get("/history", (req, res)=>{
+app.get("/history", (req, res) => {
   res.sendFile(path.join(__dirname, "history.html"));
 });
 
-app.get("/order", (req, res)=>{
+app.get("/order", (req, res) => {
   res.sendFile(path.join(__dirname, "order.html"));
 });
 
-app.get("/shedule", (req, res)=>{
+app.get("/shedule", (req, res) => {
   res.sendFile(path.join(__dirname, "shedule.html"));
 });
 
-app.get("/confirm", (req, res)=>{
+app.get("/confirm", (req, res) => {
   res.sendFile(path.join(__dirname, "confirm.html"));
 });
 
 // admin views
 
-app.get("/adminview", (req, res)=>{
+app.get("/adminview", (req, res) => {
   res.sendFile(path.join(__dirname, "adminView.html"));
 });
 
-app.get("/items_edit", (req, res)=>{
+app.get("/items_edit", (req, res) => {
   res.sendFile(path.join(__dirname, "item_edit.html"))
 });
 
-app.get("/edit", (req, res)=>{
+app.post("/items_edit", (req, res) => {
+  const { id, title, name, type, price } = req.body;
+  if (update_food(id, title, name, type, price)) {
+    console.log("hogaya!!")
+  }
+  else
+    console.log("bhai scene hai ")
+});
+
+app.get("/edit", (req, res) => {
   res.sendFile(path.join(__dirname, "item.html"));
 });
+
 
 app.listen(5000, () => {
   console.log(`Server is running on port 5000.`);
 });
 
 
-function send_data(name, password, email, mobile, person, uid ){
-
-  var con_data = mysql.createConnection({
+function connect() {
+  return mysql.createConnection({
     host: "localhost",
     user: "root",
     password: "",
     database: "aadi"
   });
+}
+
+function send_data(name, password, email, mobile, person, uid) {
+
+  var con_data = connect();
 
   var suc = true;
-  con_data.connect(function(err) {
-    if (err) 
+  con_data.connect(function (err) {
+    if (err)
       return err;
-    
+
     // console.log(name, password, email, mobile, person, uid);
     var sql = `INSERT INTO \`data\`(\`username\`, \`password\`, \`uid\`, \`mobile\`, \`email\`, \`type\`) VALUES  ('${name}','${password}','${uid}',${mobile},'${email}','${person}')`;
-    
+
     con_data.query(sql, function (err, result) {
       if (err)
         return err;
@@ -142,23 +156,19 @@ function send_data(name, password, email, mobile, person, uid ){
   return suc;
 }
 
-function get_data(id, callback){
+function get_data(id, callback) {
 
-  var con_data = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "aadi"
-  });
+  var con_data = connect();
 
   var suc = true;
   var res = null;
-  con_data.connect(function(err) {
-    if (err) 
+  con_data.connect(function (err) {
+    if (err)
       return err;
-    
+
     var sql = `SELECT * FROM \`data\` WHERE uid='${id}';`;
     // console.log(sql);
+
     con_data.query(sql, function (err, result, field) {
       if (err)
         return err;
@@ -166,6 +176,33 @@ function get_data(id, callback){
       res = result;
       callback(result);
     });
+
   });
   return res;
 }
+
+function update_food(id, title, name, type, price) {
+  var con_data = connect();
+
+  var suc = true;
+  con_data.connect(function (err) {
+
+    if (err) {
+      console.log(err)
+      return suc;
+    }
+
+    var sql = `UPDATE food SET title = ${title}, name = ${name}, type = ${type}, price = ${price} WHERE fid = ${id};`;
+
+    con_data.query(sql, function (err, result) {
+      if (err) {
+        console.log(err);
+        return suc;
+      }
+      console.log("1 record updated");
+    });
+  });
+  return suc;
+}
+
+
