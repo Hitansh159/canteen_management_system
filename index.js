@@ -4,7 +4,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 
 const app = express();
-
+app.engine('html', require('ejs').renderFile);
+app.set('view engine', 'html');
 app.use(bodyParser.json());
 
 app.get("/", (req, res) => {
@@ -115,7 +116,16 @@ app.post("/items_edit", (req, res) => {
     
 });
 
-app.get("/edit", (req, res) => {
+app.post("/edit", (req, res) => {
+  console.log("calling item.html");
+  const {fid, name, type, price } = req.body ; 
+  res.app.locals.fid = 0;
+  res.send({result: 1})
+  // res.set({fid:0});
+  // res.render(path.join(__dirname, "item.html"));
+});
+
+app.get("/edit", (req, res)=>{
   res.sendFile(path.join(__dirname, "item.html"));
 });
 

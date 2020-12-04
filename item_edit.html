@@ -86,30 +86,29 @@
 </body>
 
 <script>
-  document.addEventListener("submit", sendData);
+  var food_arr=[];
 
-  function sendData(e) {
-    e.preventDefault();
-    const title = document.querySelector("#title").value;
-    const name = document.querySelector("#name").value;
-    const type = document.querySelector("#type").value;
-    const price = document.querySelector("#price").value;
-
-    fetch("/items_edit", {
+  function sendData(arrid) {
+    console.log(arrid);
+    const {fid, name, type, price} = food_arr[arrid];
+    
+    console.log(food_arr[arrid]);
+    // following code is not appropriate its for reffrance 
+    fetch("/edit", {
       method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        id: 1,
-        title: title,
+        id: fid,
+        title: name,
         name: name,
         type: type,
         price: price
       })
     })
-      .then(res => res.json())
+    .then(res => res.json())
       .then(data => {
         const { result } = data;
 
@@ -119,11 +118,16 @@
           ).innerText = `Their is some error please retry`;
 
         else if (result == 1)
-          window.location.href = "/items_edit";
+          console.log(res.locals);
+          window.location.href = "/edit";
 
       })
       .catch(err => console.log(err));
   }
+    // load all food data at beigning 
+    // respond with same array to all request 
+    // no need to query dbms again and again   
+    // only viable solution is to use templates  
 
   function get_data() {
     console.log("called");
@@ -132,8 +136,8 @@
     })
       .then(res => res.json())
       .then(data => {
+        food_arr = data;
         create_cards(data);
-
       })
       .catch(err => console.log(err));
   }
@@ -158,7 +162,7 @@
             Price : <span id="price${i}">${price}</span>
           </p>
 
-          <button class="btn btn-primary" onclick="()=>{sendData(${i})}">edit</button>
+          <button class="btn btn-primary" onclick="sendData(${i})">edit</button>
         </div>
       </div>`
     }
