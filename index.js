@@ -2,14 +2,27 @@ const path = require("path");
 const mysql = require('mysql');
 const express = require("express");
 const bodyParser = require("body-parser");
+// const db_connect = require("db_connect");
 
 const app = express();
-
+app.engine('html', require('ejs').renderFile);
+app.set('view engine', 'html');
 app.use(bodyParser.json());
 
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "sign_in.html"));
-});
+function setup_get_requests(link, filename){
+  app.get(link, (req, res)=>{
+    res.sendFile(path.join(__dirname, filename));
+  });
+}
+
+var login_list = { 
+  "/" : "sign_in.html",
+  "/signup" : "sign_up.html"                
+};
+
+for(i in login_list ){
+  setup_get_requests(i, login_list[i]);
+} 
 
 app.post("/", (req, res) => {
   const { user, pass, email, mob, uid, sut, fac } = req.body;
@@ -27,15 +40,20 @@ app.post("/", (req, res) => {
 
 });
 
-app.get("/signup", (req, res) => {
-  res.sendFile(path.join(__dirname, "sign_up.html"));
-});
-
 // client views
 
-app.get("/clientview", (req, res) => {
-  res.sendFile(path.join(__dirname, "client_view.html"));
-});
+var client_pages = {
+  "/clientview" : "client_view.html",
+  "/profile" : "profile.html",
+  "/history" : "history.html",
+  "/order" : "order.html",
+  "/shedule" : "shedule.html" ,
+  "/confirm" : "confirm.html"
+};
+
+for( i in client_pages){
+  setup_get_requests(i, client_pages[i]);
+}
 
 app.post("/clientview", (req, res) => {
   const { id, pass } = req.body;
@@ -75,35 +93,19 @@ app.post("/clientview", (req, res) => {
 
 });
 
-app.get("/profile", (req, res) => {
-  res.sendFile(path.join(__dirname, "profile.html"));
-});
-
-app.get("/history", (req, res) => {
-  res.sendFile(path.join(__dirname, "history.html"));
-});
-
-app.get("/order", (req, res) => {
-  res.sendFile(path.join(__dirname, "order.html"));
-});
-
-app.get("/shedule", (req, res) => {
-  res.sendFile(path.join(__dirname, "shedule.html"));
-});
-
-app.get("/confirm", (req, res) => {
-  res.sendFile(path.join(__dirname, "confirm.html"));
-});
 
 // admin views
 
-app.get("/adminview", (req, res) => {
-  res.sendFile(path.join(__dirname, "adminView.html"));
-});
+var admin_pages = {
+  "/adminview" : "adminView.html",
+  "/items_edit" : "item_edit.html",
+  "/edit" : "item.html"
+};
 
-app.get("/items_edit", (req, res) => {
-  res.sendFile(path.join(__dirname, "item_edit.html"))
-});
+for(url in admin_pages){
+  console.log
+  setup_get_requests(url, admin_pages[url]);
+}
 
 app.post("/items_edit", (req, res) => {
   console.log("getting call");
@@ -115,8 +117,13 @@ app.post("/items_edit", (req, res) => {
     
 });
 
-app.get("/edit", (req, res) => {
-  res.sendFile(path.join(__dirname, "item.html"));
+app.post("/edit", (req, res) => {
+  console.log("calling item.html");
+  const {fid, name, type, price } = req.body ; 
+  res.app.locals.fid = 0;
+  res.send({result: 1})
+  // res.set({fid:0});
+  // res.render(path.join(__dirname, "item.html"));
 });
 
 app.get("/get_food_data", (req, res)=>{
@@ -130,7 +137,11 @@ app.listen(5000, () => {
   console.log(`Server is running on port 5000.`);
 });
 
-
+/*
+create a file name db_connect
+store all functions their and change calling in this file from 
+function_name to  db_connect.function_name 
+*/
 function connect() {
   return mysql.createConnection({
     host: "localhost",
