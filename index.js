@@ -137,6 +137,10 @@ app.listen(5000, () => {
   console.log(`Server is running on port 5000.`);
 });
 
+app.get("/view.js" ,(req,res)=>{
+  res.sendFile(path.join(__dirname, "view.js"));
+});
+
 /*
 create a file name db_connect
 store all functions their and change calling in this file from 
