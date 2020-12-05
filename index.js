@@ -2,7 +2,7 @@ const path = require("path");
 const mysql = require('mysql');
 const express = require("express");
 const bodyParser = require("body-parser");
-// const db_connect = require("db_connect");
+const db_connect = require("./db_connect");
 
 const app = express();
 app.engine('html', require('ejs').renderFile);
@@ -142,7 +142,7 @@ create a file name db_connect
 store all functions their and change calling in this file from 
 function_name to  db_connect.function_name 
 */
-function connect() {
+/*function connect() {
   return mysql.createConnection({
     host: "localhost",
     user: "root",
@@ -289,4 +289,4 @@ function load_food(callback){
   });
 
   return suc;
-}
+}*/
