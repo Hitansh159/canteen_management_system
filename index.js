@@ -2,7 +2,7 @@ const path = require("path");
 const mysql = require('mysql');
 const express = require("express");
 const bodyParser = require("body-parser");
-// const db_connect = require("db_connect");
+const db_connect = require("./db_connect");
 
 const app = express();
 app.engine('html', require('ejs').renderFile);
@@ -27,7 +27,7 @@ for(i in login_list ){
 app.post("/", (req, res) => {
   const { user, pass, email, mob, uid, sut, fac } = req.body;
   var person = sut == true ? "s" : "f";
-  if (send_data(user, pass, email, mob, person, uid)) {
+  if (db_connect.send_data(user, pass, email, mob, person, uid)) {
     res.send({
       result: 1
     });
@@ -58,7 +58,7 @@ for( i in client_pages){
 app.post("/clientview", (req, res) => {
   const { id, pass } = req.body;
 
-  var result = get_data(id
+  var result = db_connect.get_data(id
     , (result) => {
       console.log(result);
 
@@ -112,7 +112,7 @@ app.post("/items_edit", (req, res) => {
   const { id, title, name, type, price } = req.body;
 
   res.send({
-    result : update_food(id, title, name, type, price) ? 1 : 0
+    result : db_connect.update_food(id, title, name, type, price) ? 1 : 0
   });
     
 });
@@ -127,7 +127,7 @@ app.post("/edit", (req, res) => {
 });
 
 app.get("/get_food_data", (req, res)=>{
-  load_food((result)=>{
+  db_connect.load_food((result)=>{
     console.log(result);
     res.send(result);
   });
@@ -142,7 +142,7 @@ create a file name db_connect
 store all functions their and change calling in this file from 
 function_name to  db_connect.function_name 
 */
-function connect() {
+/*function connect() {
   return mysql.createConnection({
     host: "localhost",
     user: "root",
@@ -289,4 +289,4 @@ function load_food(callback){
   });
 
   return suc;
-}
+}*/
