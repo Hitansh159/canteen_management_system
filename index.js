@@ -4,18 +4,17 @@ const bodyParser = require("body-parser");
 const db_connect = require("./db_connect");
 
 const app = express();
-app.engine('html', require('ejs').renderFile);
-app.set('view engine', 'html');
-app.use(bodyParser.json());
+app.set('view engine', 'ejs');
+// app.use(bodyParser.json());
 
 function setup_get_requests(link, filename){
   app.get(link, (req, res)=>{
-    res.sendFile(path.join(__dirname, filename));
+    res.render( "pages/"+filename);
   });
 }
 
 var login_list = { 
-  "/" : "sign_in.html",
+  "/" : "sign_in",
   "/signup" : "sign_up.html"                
 };
 
