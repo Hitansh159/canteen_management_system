@@ -107,19 +107,19 @@ for(url in admin_pages){
 
 app.post("/items_edit", (req, res) => {
   console.log("getting call");
-  const { id, title, name, type, price } = req.body;
+  const { id, name, type, price } = req.body;
 
   res.send({
-    result : db_connect.update_food(id, title, name, type, price) ? 1 : 0
+    result : db_connect.update_food(id, name, type, price) ? 1 : 0
   });
     
 });
 
 app.post("/edit", (req, res) => {
   console.log("calling item.html");
-  const {fid, name, type, price } = req.body ; 
-  res.app.locals.fid = 0;
-  res.send({result: 1})
+  const {fid, name, type, price } = req.body ;
+
+  res.render("pages/item", {result: 1})
   // res.set({fid:0});
   // res.render(path.join(__dirname, "item.html"));
 });
