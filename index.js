@@ -1,5 +1,4 @@
 const path = require("path");
-const mysql = require('mysql');
 const express = require("express");
 const bodyParser = require("body-parser");
 const db_connect = require("./db_connect");
