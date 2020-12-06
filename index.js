@@ -1,5 +1,4 @@
 const path = require("path");
-const mysql = require('mysql');
 const express = require("express");
 const bodyParser = require("body-parser");
 const db_connect = require("./db_connect");
@@ -135,6 +134,10 @@ app.get("/get_food_data", (req, res)=>{
 
 app.listen(5000, () => {
   console.log(`Server is running on port 5000.`);
+});
+
+app.get("/view.js" ,(req,res)=>{
+  res.sendFile(path.join(__dirname, "view.js"));
 });
 
 /*
