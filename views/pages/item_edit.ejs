@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <%- include('../partials/head.ejs')%>
+</head>
+<body onload="get_data()">
+  <!-- navbar -->
+  <header>
+  <%- include('../partials/header.ejs', {user : "client"})%>
+  </header>
+
+  <div class="food_container" id="food_container">
+
+  </div>
+
+  <!--// cards += ` 
+  // <div class="card" style="width: 18rem; ">
+
+  //   <img src = "" class="card-img-top" alt = "${name}" loading = "lazy" >
+
+  //   <div class="card-body">
+
+  //     <h5 class="card-title">${name}</h5>
+  //     <p class="card-text">
+  //       Name: <span id="name${i}">${name}</span><br>
+  //       Type: <span id="type${i}">${type} </span><br>
+  //       <hr>
+  //       Price : <span id="price${i}">${price}</span>
+  //     </p>
+
+  //     <button class="btn btn-primary" onclick="editData(${i})">edit</button>
+  //   </div>
+  // </div> -->
+
+</body>
+
+<script>
+  var food_arr=[];
+
+  function sendData(arrid) {
+    console.log(arrid);
+    // const {fid, name, type, price} = food_arr[arrid];
+    
+    console.log(food_arr[arrid]);
+    var name = document.getElementById("name"+arrid);
+    var type = document.getElementById("type"+arrid);
+    var price = document.getElementById("price"+arrid);
+
+    name.disabled = true;
+    type.disabled = true;
+    price.disabled = true;
+
+    var save = document.getElementById("save"+arrid);
+    var edit = document.getElementById("edit"+arrid);
+    save.disabled = true;
+    edit.disabled = false;
+
+    fetch("/items_edit", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        id : arrid,
+        name : name.value,
+        type : type.value,
+        price : price.value
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        const { result } = data;
+
+        if (result == 0)
+          alert("please retry");
+
+        else if (result == 1)
+          window.location.reload();
+
+      })
+      .catch(err => console.log(err));
+  }
+
+  function editData(arrid){
+    var title = document.getElementById("title"+arrid);
+    var name = document.getElementById("name"+arrid);
+    var type = document.getElementById("type"+arrid);
+    var price = document.getElementById("price"+arrid);
+
+    name.disabled = false;
+    type.disabled = false;
+    price.disabled = false;
+
+    var save = document.getElementById("save"+arrid);
+    var edit = document.getElementById("edit"+arrid);
+    save.disabled = false;
+    edit.onclick = false;
+    edit.disabled = true;
+    
+ 
+  } 
+
+  function get_data() {
+    console.log("called");
+    fetch("/get_food_data", {
+      method: "GET",
+    })
+      .then(res => res.json())
+      .then(data => {
+        food_arr = data;
+        create_cards(data);
+      })
+      .catch(err => console.log(err));
+  }
+
+  function create_cards(items) {
+    var cards = "";
+    for (var i = 0; i < items.length; i++) {
+      const { fid, name, type, price } = items[i];
+
+
+      cards += 
+      `<form>
+      <div class="card" style="width: 18rem;">
+      <!-- <img src="https://upload.wikimedia.org/wikipedia/commons/f/f1/Salt_lassi.jpg" class="card-img-top" alt="lassi"
+      loading="lazy"> -->
+      <div class="card-body">
+        <h5 class="card-title">
+
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">Title: #1</span>
+          </div>
+          <input type="text" class="form-control" placeholder="Title" aria-label="Title"
+            aria-describedby="basic-addon1" value="${name}" id="title${fid}" disabled>
+        </div>
+
+        </h5>
+        <p class="card-text">
+
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">Name: </span>
+          </div>
+          <input type="text" class="form-control" placeholder="name" aria-label="name" aria-describedby="basic-addon1"
+          value="${name}" id="name${fid}" disabled>
+        </div>
+
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">type: </span>
+          </div>
+          <input type="text" class="form-control" placeholder="type" aria-label="type" aria-describedby="basic-addon1"
+            value="${type}" id="type${fid}" disabled>
+        </div>
+
+        <hr>
+
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">Price: </span>
+          </div>
+          <input type="text" class="form-control" placeholder="price" aria-label="price" aria-describedby="basic-addon1" value="${price}" id="price${fid}" disabled>
+        </div>
+
+      </p>
+        <button class="btn btn-primary" id="edit${fid}" type="button" onclick="editData(${fid})">edit</button>
+        <button class="btn btn-primary" id="save${fid}" type="button" onclick="sendData(${fid})" disabled>save</button>
+      </div>
+      </div>
+      </form>`
+    }
+
+    document.getElementById("food_container").innerHTML = cards;
+
+  }
+</script>
+
+</html>

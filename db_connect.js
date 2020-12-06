@@ -65,7 +65,7 @@ function connect() {
     return suc;
   }
   
-  function update_food(id, title, name, type, price) {
+  function update_food(id, name, type, price) {
     var conn = connect();
     var suc = true;
   

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head.ejs'); %>
+</head>
+<body>
+  <!-- headers -->
+<header>
+  <%- include('../partials/header.ejs', {user : "client"});%>
+</header>
+
+<!-- food items -->
+<div class="food_container">
+
+  <div class="card" style="width: 18rem;">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/f/f1/Salt_lassi.jpg"  class="card-img-top" alt="idli">
+    <div class="card-body">
+      <h5 class="card-title">lassi</h5>
+      <p class="card-text">
+        Name: lassi <br>
+        Type: south indian <br>
+        <hr>
+        Price : 10 
+      </p>
+      <a href="#" class="btn btn-primary">add to cart</a>
+    </div>
+  </div>
+
+</div>
+
+<!-- order -->
+
+<div>
+  <a href="/shedule" class="btn btn-primary" style="position: relative; left: 10px; padding-bottom: 10px; ">Shedule</a>
+  <a href="/order" class="btn btn-primary" style="position:relative; left: 50%; padding-left: 10px;" >Order now</a>
+</div>
+
+</body>
+</html>

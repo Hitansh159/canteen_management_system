@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <%- include('../partials/head.ejs')%>
+  <style>
+    table {
+      border-style: solid;
+      border-color: rgb(15, 238, 227);
+      padding: 10px;
+
+    }
+
+    .shedule {
+      border-style: solid;
+      border-color: rgb(15, 238, 227);
+
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <header>
+    <%- include('../partials/header.ejs', {user : "admin"})%>
+
+  </header>
+
+  <h1>BILL:</h1>
+  <form>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Item</th>
+          <th scope="col">Qyt</th>
+          <th scope="col">Amt</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <tr>
+          <th scope="row">1</th>
+          <td>lassi</td>
+          <td>
+            <select class="form-control" id="exampleFormControlSelect1" onchange="myfunc(this.value)">
+              <option>1</option>
+              <option>2</option>
+              <option>3</option>
+              <option>4</option>
+              <option>5</option>
+
+            </select>
+          </td>
+          <td>
+            <span id="amt1"></span>
+            <script>
+              function myfunc(val) {
+                document.getElementById("amt1").innerHTML = val * 10;
+              } 
+            </script>
+          </td>
+        </tr>
+
+        <tr>
+          <th scope="row">2</th>
+          <td>idli</td>
+          <td>
+            <select class="form-control" id="exampleFormControlSelect2">
+              <option>1</option>
+              <option>2</option>
+              <option>3</option>
+              <option>4</option>
+              <option>5</option>
+            </select>
+          </td>
+          <td>
+            <span id="amt1"> 50 </span>
+          </td>
+        </tr>
+
+        <tr>
+          <th scope="row">3</th>
+          <td>pav</td>
+          <td>
+            <select class="form-control" id="exampleFormControlSelect3">
+              <option>1</option>
+              <option>2</option>
+              <option>3</option>
+              <option>4</option>
+              <option>5</option>
+            </select>
+          </td>
+          <td>
+            <span id="amt1"> 50 </span>
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+
+    <center>
+      <a type="button" class="btn btn-primary" href="/confirm">Order</a>
+      <a type="button" class="btn btn-danger" href="/clientview">Cancel</a>
+    </center>
+  </form>
+
+
+
+</body>
+
+</html>
