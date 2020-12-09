@@ -20,7 +20,7 @@
 
 </head>
 
-<body>
+<body onload="gen_bill()">
 
 
   <header>
@@ -40,64 +40,15 @@
           <th scope="col">Amt</th>
         </tr>
       </thead>
-      <tbody>
 
-        <tr>
-          <th scope="row">1</th>
-          <td>lassi</td>
-          <td>
-            <select class="form-control" id="exampleFormControlSelect1">
-              <option>1</option>
-              <option>2</option>
-              <option>3</option>
-              <option>4</option>
-              <option>5</option>
-            </select>
-          </td>
-          <td>
-            <span id="amt1"> 10 </span>
-          </td>
-        </tr>
+      <tbody id="table-body">
 
-        <tr>
-          <th scope="row">2</th>
-          <td>idli</td>
-          <td>
-            <select class="form-control" id="exampleFormControlSelect2">
-              <option>1</option>
-              <option>2</option>
-              <option>3</option>
-              <option>4</option>
-              <option>5</option>
-            </select>
-          </td>
-          <td>
-            <span id="amt1"> 50 </span>
-          </td>
-        </tr>
-
-        <tr>
-          <th scope="row">3</th>
-          <td>pav</td>
-          <td>
-            <select class="form-control" id="exampleFormControlSelect3">
-              <option>1</option>
-              <option>2</option>
-              <option>3</option>
-              <option>4</option>
-              <option>5</option>
-            </select>
-          </td>
-          <td>
-            <span id="amt1"> 50 </span>
-          </td>
-        </tr>
 
       </tbody>
     </table>
 
     <center>
-      <a type="button" class="btn btn-primary" href="/confirm">Order</a>
+      <button type="button" class="btn btn-primary" onclick="order()">Order</button>
       <a type="button" class="btn btn-danger" href="/clientview">Cancel</a>
     </center>
   </form>
@@ -130,5 +81,74 @@
     crossorigin="anonymous"></script>
 
 </body>
+<script>
+
+  function gen_bill() {
+    var order_items = JSON.parse(sessionStorage.getItem("order"));
+    var rows = "";
+    var i=0;
+
+    for (fid in order_items) {
+      console.log(order_items[fid]);
+
+      rows +=
+        `<tr id="item${i}">
+          <th scope="row">${i + 1}</th>
+          <td>${order_items[fid]["name"]}</td>
+          <td>
+            <select class="form-control" id="qyt${i}" onchange="change(${i}, ${order_items[fid]["price"]})">
+              <option>0</option>
+              <option selected>1</option>
+              <option>2</option>
+              <option>3</option>
+              <option>4</option>
+              <option>5</option>
+            </select>
+          </td>
+          <td>
+            <span id="amt${i}"> ${order_items[fid]["price"]} </span>
+          </td>
+        </tr>`
+        i++;
+    }
+    document.getElementById("table-body").innerHTML = rows;
+  }
+
+  function change(id, price) {
+    var amt = document.getElementById("amt" + id);
+    var qyt = document.getElementById("qyt" + id);
+
+    amt.innerText = price * qyt.value;
+  }
+
+  function order() {
+    var final_bill = [];
+    var order_items = JSON.parse(sessionStorage.getItem("order"));
+    var i=0;
+
+    for (fid in order_items) {
+      var name = order_items[fid]["name"];
+      var qyt = document.getElementById("qyt"+i).value;
+      var price = document.getElementById("amt"+i).innerText;
+
+      console.log([fid, name, qyt, price]);
+      final_bill.push([fid, name, qyt, price]);
+      i++;
+    }
+
+    fetch("/test", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        order : final_bill
+      })
+    });
+    sessionStorage.clear();
+  }
+
+</script>
 
 </html>

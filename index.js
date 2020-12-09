@@ -126,16 +126,17 @@ app.post("/edit", (req, res) => {
 
 app.get("/get_food_data", (req, res)=>{
   db_connect.load_food((result)=>{
-    console.log(result);
     res.send(result);
   });
+});
+
+app.post("/test", (req,res)=>{
+  console.log("test: ", req.body);
+  res.end;
 });
 
 app.listen(5000, () => {
   console.log(`Server is running on port 5000.`);
 });
 
-app.get("/view.js" ,(req,res)=>{
-  res.sendFile(path.join(__dirname, "view.js"));
-});
 
