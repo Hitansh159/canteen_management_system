@@ -59,16 +59,8 @@
   </p>
   <div class="shedule">
     <p>Time: Select Time</p>
-    <div class="dropdown">
-      <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Time
-        <span class="caret"></span></button>
-      <ul class="dropdown-menu">
-        <li><a href="#">10-10:30</a></li>
-        <li><a href="#">11-11:30</a></li>
-        <li><a href="#">12-12:30</a></li>
-      </ul>
-    </div>
-
+    <input type="time" id="eta" required><br>
+    Time should be 15 min from now to 1:30 hr ahead.
   </div>
   </div>
 
@@ -83,13 +75,29 @@
 </body>
 <script>
 
+  function set_time(){
+    var min_date = new Date(new Date().getTime() + (60000 * 15) );
+    var hours = min_date.getHours();
+    var min = min_date.getMinutes();
+    console.log(hours, min);
+    console.log(`${hours}:${min}`);
+    var time_ele = document.getElementById("eta");
+    time_ele.min = `${hours}:${min}`;
+
+    
+    var max_date = new Date(new Date().getTime() + (60000 * 90) );
+    var hours = max_date.getHours();
+    var min = max_date.getMinutes();
+
+    time_ele.max = `${hours}:${min}`;
+  }
+
   function gen_bill() {
     var order_items = JSON.parse(sessionStorage.getItem("order"));
     var rows = "";
     var i=0;
 
     for (fid in order_items) {
-      console.log(order_items[fid]);
 
       rows +=
         `<tr id="item${i}">
@@ -112,6 +120,7 @@
         i++;
     }
     document.getElementById("table-body").innerHTML = rows;
+    set_time();
   }
 
   function change(id, price) {
@@ -136,7 +145,10 @@
       i++;
     }
 
-    fetch("/test", {
+    var eta = document.getElementById("eta").value;
+    console.log(eta); 
+
+    fetch("/bill", {
       method: "POST",
       headers: {
         Accept: "application/json",

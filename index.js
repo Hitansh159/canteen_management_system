@@ -130,12 +130,22 @@ app.get("/get_food_data", (req, res)=>{
   });
 });
 
+app.post("/bill", (req,res)=>{
+  const { order, min} = req.body;
+  
+  var eta = new Date(new Date().getTime() + ( 1000 * 60 * min));
+  eta = eta.toISOString().slice(0,19).replace('T', ' ');
+  
+  db_connect.set_order(order, eta);
+  res.end;
+});
+
 app.post("/test", (req,res)=>{
   console.log("test: ", req.body);
   res.end;
 });
 
-app.listen(5000, () => {
+app.listen(5000, () => { 
   console.log(`Server is running on port 5000.`);
 });
 
