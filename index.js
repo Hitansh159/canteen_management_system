@@ -131,12 +131,14 @@ app.get("/get_food_data", (req, res)=>{
 });
 
 app.post("/bill", (req,res)=>{
-  const { order, min} = req.body;
+  const { order, min, uid} = req.body;
   
+  var time = new Date().toISOString().slice(0,19).replace('T', ' ');
   var eta = new Date(new Date().getTime() + ( 1000 * 60 * min));
   eta = eta.toISOString().slice(0,19).replace('T', ' ');
   
-  db_connect.set_order(order, eta);
+
+  db_connect.set_order(order, time, eta, uid);
   res.end;
 });
 

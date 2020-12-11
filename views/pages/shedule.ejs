@@ -59,7 +59,15 @@
   </p>
   <div class="shedule">
     <p>Time: Select Time</p>
-    <input type="time" id="eta" required><br>
+    <select class="form-select" aria-label="Default select example" id ="eta">
+      <option selected>Open this select menu</option>
+      <option value="15">15 min</option>
+      <option value="30">30 min</option>
+      <option value="45">45 min</option>
+      <option value="60">1 hr</option>
+      <option value="75">1:15 hr</option>
+      <option value="90">1:30 hr</option>
+    </select>
     Time should be 15 min from now to 1:30 hr ahead.
   </div>
   </div>
@@ -75,23 +83,6 @@
 </body>
 <script>
 
-  function set_time(){
-    var min_date = new Date(new Date().getTime() + (60000 * 15) );
-    var hours = min_date.getHours();
-    var min = min_date.getMinutes();
-    console.log(hours, min);
-    console.log(`${hours}:${min}`);
-    var time_ele = document.getElementById("eta");
-    time_ele.min = `${hours}:${min}`;
-
-    
-    var max_date = new Date(new Date().getTime() + (60000 * 90) );
-    var hours = max_date.getHours();
-    var min = max_date.getMinutes();
-
-    time_ele.max = `${hours}:${min}`;
-  }
-
   function gen_bill() {
     var order_items = JSON.parse(sessionStorage.getItem("order"));
     var rows = "";
@@ -104,7 +95,7 @@
           <th scope="row">${i + 1}</th>
           <td>${order_items[fid]["name"]}</td>
           <td>
-            <select class="form-control" id="qyt${i}" onchange="change(${i}, ${order_items[fid]["price"]})">
+            <select class="form-control" id="qyt${i}" onchange="change_price(${i}, ${order_items[fid]["price"]})">
               <option>0</option>
               <option selected>1</option>
               <option>2</option>
@@ -120,10 +111,9 @@
         i++;
     }
     document.getElementById("table-body").innerHTML = rows;
-    set_time();
   }
 
-  function change(id, price) {
+  function change_price(id, price) {
     var amt = document.getElementById("amt" + id);
     var qyt = document.getElementById("qyt" + id);
 
@@ -146,7 +136,7 @@
     }
 
     var eta = document.getElementById("eta").value;
-    console.log(eta); 
+    var uid = sessionStorage.getItem("id"); 
 
     fetch("/bill", {
       method: "POST",
@@ -155,10 +145,13 @@
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        order : final_bill
+        order : final_bill,
+        min : eta,
+        uid : uid
       })
     });
-    sessionStorage.clear();
+    sessionStorage.removeItem("order");
+    
   }
 
 </script>

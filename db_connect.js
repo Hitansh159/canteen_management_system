@@ -149,13 +149,14 @@ function load_food(callback) {
   return suc;
 }
 
-function set_order(order){ 
-  for(var i=0;i< order["order"].length; i++){
-    send_order_query(order["order"][i]);
+function gen_bill(order, oid){ 
+  console.log(order);
+  for(var i=0;i< order.length; i++){
+    send_order_query(order[i], oid);
   }
 }
 
-function send_order_query(order) {
+function send_order_query(order, oid) {
   
   var suc = true;
   var conn = connect();
@@ -169,7 +170,7 @@ function send_order_query(order) {
       suc = false;
     }
 
-    var sql = `INSERT INTO bill(oid, fid, name, quantity, price) VALUES (9, ${order[0]}, '${order[1]}', ${order[2]}, ${order[3]})`;
+    var sql = `INSERT INTO bill(oid, fid, name, quantity, price) VALUES (${oid}, ${order[0]}, '${order[1]}', ${order[2]}, ${order[3]})`;
     
     conn.query(sql, function (err, result) {
       if (err) {
@@ -181,5 +182,32 @@ function send_order_query(order) {
   });
   return suc;
 }
+
+function set_order(order, time, eta, uid){
+
+  const conn = connect();
+  var suc = true;
+
+  conn.connect(function (err) {
+    if (err) {
+      console.log(err);
+      suc = false;
+    }
+
+    var sql = `INSERT INTO delivery(uid, timestamp, eta, status) VALUES ('${uid}', '${time}', '${eta}', 'cooking');`;
+
+    conn.query(sql, (err, result, field) => {
+      if (err) {
+        console.log(err);
+        suc = false;
+      }
+      gen_bill (order, result['insertId']);
+      console.log("updated!");
+    });
+  });
+  return suc;
+
+}
+
 
 module.exports = { connect, send_data, get_data, update_food, add_food, load_food, set_order };
