@@ -13,7 +13,7 @@
 
   <!-- food items -->
   <div class="food_container" id="food_container">
-
+    
 
   </div>
 
@@ -31,7 +31,7 @@
 
 </body>
 <script>
-
+  sessionStorage.removeItem("order");
   var cart_food = {};
   var food_list = {};
 
@@ -61,7 +61,7 @@
       food_list[fid] = {name: name, type : type, price : price};
 
       cards += ` 
-  <div class="card" style="width: 18rem; ">
+  <div class="card" style="width: 18rem; display: inline-block">
 
     <img src = "" class="card-img-top" alt = "${name}" loading = "lazy" >
 
@@ -90,7 +90,7 @@
   }
 
   function order(){
-    sessionStorage.setItem("order", cart_food);
+    sessionStorage.setItem("order", JSON.stringify(cart_food));
     window.location.href = "/order"; 
   }
 </script>
