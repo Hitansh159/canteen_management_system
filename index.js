@@ -126,16 +126,29 @@ app.post("/edit", (req, res) => {
 
 app.get("/get_food_data", (req, res)=>{
   db_connect.load_food((result)=>{
-    console.log(result);
     res.send(result);
   });
 });
 
-app.listen(5000, () => {
+app.post("/bill", (req,res)=>{
+  const { order, min, uid} = req.body;
+  
+  var time = new Date().toISOString().slice(0,19).replace('T', ' ');
+  var eta = new Date(new Date().getTime() + ( 1000 * 60 * min));
+  eta = eta.toISOString().slice(0,19).replace('T', ' ');
+  
+
+  db_connect.set_order(order, time, eta, uid);
+  res.end;
+});
+
+app.post("/test", (req,res)=>{
+  console.log("test: ", req.body);
+  res.end;
+});
+
+app.listen(5000, () => { 
   console.log(`Server is running on port 5000.`);
 });
 
-app.get("/view.js" ,(req,res)=>{
-  res.sendFile(path.join(__dirname, "view.js"));
-});
 

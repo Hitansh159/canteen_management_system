@@ -1,39 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <%- include('../partials/head.ejs'); %>
 </head>
-<body>
+
+<body onload="get_data()">
   <!-- headers -->
-<header>
-  <%- include('../partials/header.ejs', {user : "client"});%>
-</header>
+  <header>
+    <%- include('../partials/header.ejs', {user : "client"});%>
+  </header>
 
-<!-- food items -->
-<div class="food_container">
+  <!-- food items -->
+  <div class="food_container" id="food_container">
+    
 
-  <div class="card" style="width: 18rem;">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/f/f1/Salt_lassi.jpg"  class="card-img-top" alt="idli">
-    <div class="card-body">
-      <h5 class="card-title">lassi</h5>
-      <p class="card-text">
-        Name: lassi <br>
-        Type: south indian <br>
-        <hr>
-        Price : 10 
-      </p>
-      <a href="#" class="btn btn-primary">add to cart</a>
-    </div>
   </div>
 
-</div>
-
-<!-- order -->
-
-<div>
-  <a href="/shedule" class="btn btn-primary" style="position: relative; left: 10px; padding-bottom: 10px; ">Shedule</a>
-  <a href="/order" class="btn btn-primary" style="position:relative; left: 50%; padding-left: 10px;" >Order now</a>
-</div>
+  <!-- order -->
+<!-- notworkng need to stroe data in database only -->
+  <div>
+    <button class="btn btn-primary" style="position: relative; left: 10px; padding-bottom: 10px; " type="button" onclick="shedule()">
+      Shedule
+    </button>
+    <button class="btn btn-primary" 
+      style="position:absolute; right: 10px; padding-left: 10px;" type = "button" onclick="order()">
+      Order now
+    </buttton>
+  </div>
 
 </body>
+<script>
+  sessionStorage.removeItem("order");
+  var cart_food = {};
+  var food_list = {};
+
+  function add_cart(fid){
+    var button = document.getElementById("add" + fid);
+    button.disabled = true;
+    button.innerText = "Added";
+    cart_food[fid] = food_list[fid] ;
+  }
+
+  function get_data() {
+    fetch("/get_food_data", {
+      method: "GET",
+    })
+      .then(res => res.json())
+      .then(data => {
+        create_cards(data);
+      })
+      .catch(err => console.log(err));
+  }
+
+  function create_cards(items) {
+
+    var cards = "";
+    for (var i = 0; i < items.length; i++) {
+      const { fid, name, type, price } = items[i];
+      food_list[fid] = {name: name, type : type, price : price};
+
+      cards += ` 
+  <div class="card" style="width: 18rem; display: inline-block">
+
+    <img src = "" class="card-img-top" alt = "${name}" loading = "lazy" >
+
+    <div class="card-body">
+
+      <h5 class="card-title">${name}</h5>
+      <p class="card-text">
+        Name: <span id="name${fid}">${name}</span><br>
+        Type: <span id="type${fid}">${type} </span><br>
+        <hr>
+        Price : <span id="price${fid}">${price}</span>
+      </p>
+
+      <button class="btn btn-primary" onclick="add_cart(${fid})" id="add${fid}" type="button">add to cart</button>
+    </div>
+  </div>`
+    }
+
+    document.getElementById("food_container").innerHTML = cards;
+
+  }
+
+  function shedule(){
+    sessionStorage.setItem("order", JSON.stringify(cart_food));
+    window.location.href = "/shedule"; 
+  }
+
+  function order(){
+    sessionStorage.setItem("order", JSON.stringify(cart_food));
+    window.location.href = "/order"; 
+  }
+</script>
+
 </html>
