@@ -142,6 +142,25 @@ app.post("/bill", (req,res)=>{
   res.end;
 });
 
+app.post( "/get_order_data", (req,res)=>{
+  const {id} = req.body;
+  db_connect.get_order(id, (result)=>{ 
+    res.send(result);
+    res.end;
+  });
+});
+
+app.post("/update_order", (req, res)=>{
+  const {id, status} = req.body; 
+  db_connect.update_order(id, status);
+});
+
+app.post("/cancel_item", (req,res)=>{
+  const {id, fid, oid} = req.body;
+  console.log(id, fid, oid);
+  db_connect.cancel_item(id, fid, oid);
+});
+
 app.post("/test", (req,res)=>{
   console.log("test: ", req.body);
   res.end;
