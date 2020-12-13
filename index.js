@@ -142,6 +142,27 @@ app.post("/bill", (req,res)=>{
   res.end;
 });
 
+app.post( "/get_order_data", (req,res)=>{
+  const {id} = req.body;
+  db_connect.get_order(id, (result)=>{ 
+    res.send(result);
+    res.end;
+  });
+});
+
+app.post("/update_order", (req, res)=>{
+  const {oid, status} = req.body; 
+  var r =  db_connect.update_order(oid, status);
+  res.send(r);
+  res.end();
+});
+
+app.post("/cancel_item", (req,res)=>{
+  const {id, fid, oid} = req.body;
+  console.log(id, fid, oid);
+  db_connect.cancel_item(id, fid, oid);
+});
+
 app.post("/test", (req,res)=>{
   console.log("test: ", req.body);
   res.end;
@@ -150,5 +171,3 @@ app.post("/test", (req,res)=>{
 app.listen(5000, () => { 
   console.log(`Server is running on port 5000.`);
 });
-
-

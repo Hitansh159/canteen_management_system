@@ -209,5 +209,90 @@ function set_order(order, time, eta, uid){
 
 }
 
+function get_order(id, callback){
 
-module.exports = { connect, send_data, get_data, update_food, add_food, load_food, set_order };
+  var conn = connect();
+  var suc = true;
+
+  conn.connect(function(err){
+    if(err){
+      console.log(err);
+      suc = false; 
+      return;
+    }
+
+    var sql;
+    if(id != '')
+      sql = `SELECT bill.*, delivery.* FROM bill INNER JOIN delivery ON bill.oid = delivery.oid WHERE delivery.uid='${id}' ORDER BY delivery.oid DESC;`;
+
+    else
+      sql = `SELECT bill.*, delivery.* FROM bill INNER JOIN delivery ON bill.oid = delivery.oid WHERE 1 ORDER BY delivery.oid DESC;`;
+
+    conn.query(sql, function(err, result){
+      if(err){
+        console.log(err);
+        suc = false;
+        return;
+      }
+
+      callback(result);
+    });
+  });
+  return suc;
+}
+
+function update_order(oid, status){
+  var conn = connect();
+  var suc = true;
+
+  conn.connect(function(err){
+    if(err){
+      console.log(err);
+      suc = false;
+      return;
+    }
+
+    var sql = `UPDATE delivery SET status= '${status}' WHERE oid = '${oid}';`;
+    console.log(sql);
+    conn.query(sql, (err)=>{
+      if (err){
+        console.log(err);
+        suc = false;
+        return;
+      }
+
+    });
+  });
+
+  return suc;
+}
+
+function cancel_item(id, fid, oid){
+
+  var conn = connect();
+  var suc = true;
+
+  conn.connect(function(err){
+    if(err){
+      console.log(err);
+      suc = false;
+      return;
+    }
+
+    var sql = `DELETE FROM bill WHERE oid = '${oid}' and fid='${fid}';`;
+    console.log(sql);
+    conn.query(sql, (err, result)=>{
+      if (err){
+        console.log(err);
+        suc = false;
+        return;
+      }
+
+
+    });
+  });
+
+  return suc;
+} 
+
+module.exports = { connect, send_data, get_data, update_food, add_food, load_food, set_order, get_order, update_order, cancel_item };
