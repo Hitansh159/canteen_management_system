@@ -29,84 +29,136 @@
 
 </head>
 
-<body>
+<body onload="get_data()">
 	<header>
 		<%- include('../partials/header.ejs', {user : "admin"})%>
 
 	</header>
 
-	<div class="col-sm-9 col-md-6 col-lg-8">
-		<div class="uinav">
-			<div class="item">
-				<nav class="navbar navbar-light" style="background-color:#f5f5f5;">
-					<div class="container-fluid">
-						<div class="nav navbar-nav">
-							<div>order id</div>
-							<div>details</div>
-						</div>
-
-						<div class="nav navbar-nav">
-							<div class="row">
-								<button type="button" class="btn btn-secondary" style="background-color:#F62217;">Reject</button>
-							</div>
-						</div>
-
-						<button type="button" class="btn btn-secondary" style="background-color:#513DFF;">Done</button>
-
-					</div>
-				</nav>
-			</div>
-		</div>
-	</div>
-
-	<div class="col-sm-9 col-md-6 col-lg-8">
-		<div class="uinav">
-			<div class="item">
-				<nav class="navbar navbar-light" style="background-color:#f5f5f5;">
-					<div class="container-fluid">
-						<div class="nav navbar-nav">
-							<div>order id</div>
-							<div>details</div>
-						</div>
-
-						<div class="nav navbar-nav">
-							<div class="row">
-								<button type="button" class="btn btn-secondary" style="background-color:#F62217;">Reject</button>
-							</div>
-						</div>
-						
-						<button type="button" class="btn btn-secondary" style="background-color:#513DFF;">Done</button>
-
-					</div>
-				</nav>
-			</div>
-		</div>
-	</div>
-
-	<div class="col-sm-9 col-md-6 col-lg-8">
-		<div class="uinav">
-			<div class="item">
-				<nav class="navbar navbar-light" style="background-color:#f5f5f5;">
-					<div class="container-fluid">
-						<div class="nav navbar-nav">
-							<div>order id</div>
-							<div>details</div>
-						</div>
-
-						<div class="nav navbar-nav">
-							<div class="row">
-								<button type="button" class="btn btn-secondary" style="background-color:#F62217;">Reject</button>
-							</div>
-						</div>
-						
-						<button type="button" class="btn btn-secondary" style="background-color:#513DFF;">Done</button>
-
-					</div>
-				</nav>
-			</div>
-		</div>
+	<div id="container">
+	
 	</div>
 
 </body>
+<script>
 
+	var data;
+	function get_data() {
+		var id = sessionStorage.getItem("id");
+		fetch("/get_order_data", {
+			method: "post",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        id: ''
+      })
+		})
+		.then(res => res.json())
+		.then(order_data => {
+			data = order_data;
+			create_cards();
+		})
+		.catch(err => console.log(err));
+	}
+	
+	function create_cards() {
+	
+			var cards = "";
+			for (var i = 0; i < data.length; i++) {
+				const {eta, fid, name, oid, price, quantity, status, timestamp, uid} = data[i];
+				var temp = timestamp==eta ? "":"Sheduled for: "+eta.slice(0, 19).replace('T', ' ');
+	
+				cards += ` 
+				<div class="col-sm-9 col-md-6 col-lg-8">
+			<div class="uinav">
+				<div class="his${i}">
+	
+					<nav class="navbar navbar-light" style="background-color:#f5f5f5;">
+						<div class="container-fluid">
+							<div class="nav navbar-nav">
+								<div>order id: ${oid}</div>
+								<div>details: <br> 
+									food : ${name} <br>
+									qyt : ${quantity} <br>
+									price : ${price} <br>
+									<br>
+									ordered on: ${timestamp.slice(0,19).replace('T', ' ')} <br>
+									${temp}
+								</div>
+							</div>`;
+
+				if(status == "cooking"){// &&  new Date(eta).getTime() >= new Date().getTime() + ( 60 * 1000 * 30) ){
+				cards +=
+					`<div class="nav navbar-nav">
+								<div class="row" id="stauts${i}">
+									<button type="button" onclick="cancel(${i})" class="btn btn-danger">
+									Cancel  </button>  
+									&nbsp  
+									<button type="button" onclick="completed(${i})" class="btn btn-primary">
+									completed </button>   
+								</div>
+							</div>
+						</div>
+				</div>
+			</div>
+		</div>
+		<br>`
+	
+				}
+	
+				else{
+					cards +=
+					`<div class="nav navbar-nav">
+								<div class="row" id="stauts${i}">
+									status: ${status}
+								</div>
+							</div>
+						</div>
+				</div>
+			</div>
+		</div>
+		<br>`
+				}
+	
+			}
+	
+			document.getElementById("container").innerHTML = cards;
+	
+		}
+	
+	function cancel(i){
+		const oid = data[i]["oid"];
+	
+		fetch("/update_order", {
+			method: "post",
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify({
+				oid: oid,
+				status: 'canceled' 
+			})
+		});
+	}
+
+	function completed(i){
+		var oid = data[i]["oid"];
+		console.log(data, data[i]["oid"]);
+	
+		fetch("/update_order", {
+			method: "post",
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify({
+				oid: oid,
+				status: 'ready' 
+			})
+		});
+	}
+</script>
 </html>

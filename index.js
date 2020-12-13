@@ -151,8 +151,10 @@ app.post( "/get_order_data", (req,res)=>{
 });
 
 app.post("/update_order", (req, res)=>{
-  const {id, status} = req.body; 
-  db_connect.update_order(id, status);
+  const {oid, status} = req.body; 
+  var r =  db_connect.update_order(oid, status);
+  res.send(r);
+  res.end();
 });
 
 app.post("/cancel_item", (req,res)=>{
@@ -169,5 +171,3 @@ app.post("/test", (req,res)=>{
 app.listen(5000, () => { 
   console.log(`Server is running on port 5000.`);
 });
-
-

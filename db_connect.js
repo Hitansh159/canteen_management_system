@@ -221,7 +221,12 @@ function get_order(id, callback){
       return;
     }
 
-    var sql = `SELECT bill.*, delivery.* FROM bill INNER JOIN delivery ON bill.oid = delivery.oid WHERE delivery.uid='${id}';`;
+    var sql;
+    if(id != '')
+      sql = `SELECT bill.*, delivery.* FROM bill INNER JOIN delivery ON bill.oid = delivery.oid WHERE delivery.uid='${id}' ORDER BY delivery.oid DESC;`;
+
+    else
+      sql = `SELECT bill.*, delivery.* FROM bill INNER JOIN delivery ON bill.oid = delivery.oid WHERE 1 ORDER BY delivery.oid DESC;`;
 
     conn.query(sql, function(err, result){
       if(err){
@@ -236,7 +241,7 @@ function get_order(id, callback){
   return suc;
 }
 
-function update_order(id, status){
+function update_order(oid, status){
   var conn = connect();
   var suc = true;
 
@@ -247,8 +252,8 @@ function update_order(id, status){
       return;
     }
 
-    var sql = `UPDATE delivery SET status= '${status}' WHERE oid = '${id}';`;
-
+    var sql = `UPDATE delivery SET status= '${status}' WHERE oid = '${oid}';`;
+    console.log(sql);
     conn.query(sql, (err)=>{
       if (err){
         console.log(err);
